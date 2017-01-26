@@ -2,8 +2,9 @@ var ChatBot = {};
 
 //The server path will be used when sending the chat message to the server.
 //todo replace with your server path if needed
-ChatBot.SERVER_PATH = "http://localhost:7000";
+ChatBot.SERVER_PATH = "http://localhost:7070";
 ChatBot.DEFAULT_ANIMATION = "waiting";
+
 //The animation timeout is used to cut the current running animations when a new animations starts
 ChatBot.animationTimeout;
 //Holds the speech synthesis configuration like language, pich and rate
@@ -46,6 +47,8 @@ ChatBot.bindErrorHandlers = function () {
         $("#mute-btn").hide();
     }
 };
+
+
 
 ChatBot.bindUserActions = function () {
     //Both the "Enter" key and clicking the "Send" button will send the user's message
@@ -115,12 +118,12 @@ $.ajax("/test",{
     });
 
 
-
 ChatBot.write = function (message, sender, emoji) {
     //Only boto's messages should be heard
     if (sender == "boto" && ChatBot.speechEnabled) {
         ChatBot.speak(message);
     }
+
     var chatScreen = $(".chat-screen");
     sender = $("<span />").addClass("sender").addClass(sender).text(sender + ":");
     var msgContent = $("<span />").addClass("msg").text(message);
@@ -150,6 +153,7 @@ ChatBot.speak = function (msg) {
     }
 };
 
+//When there is an error the chat will print the error type and make the robot cry
 ChatBot.handleServerError = function (errorThrown) {
     ChatBot.debugPrint("Server Error: " + errorThrown);
     var actualError = "";
@@ -161,10 +165,13 @@ ChatBot.handleServerError = function (errorThrown) {
     $(".chat-send").removeClass("loading");
 };
 
+//Function to print information, if debug mode off will not print
 ChatBot.debugPrint = function (msg) {
     if (ChatBot.debugMode) {
         console.log("CHATBOT DEBUG: " + msg)
     }
 };
 
+//==========================================================
+//Starts the script
 ChatBot.start();
